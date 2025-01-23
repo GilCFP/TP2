@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/gil/Code/faculdade/ED/TP2/hospital-scheduling-simulation/bin/tp2.out'
+relocations:     []
+...

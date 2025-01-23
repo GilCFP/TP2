@@ -1,0 +1,26 @@
+// filepath: /Users/gil/Code/faculdade/ED/TP2/.vscode/launch.json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug TP2",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/hospital-scheduling-simulation/bin/tp2.out",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for lldb",
+                    "text": "settings set target.process.python-os-plugin true",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build"
+        }
+    ]
+}
