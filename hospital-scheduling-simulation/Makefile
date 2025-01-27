@@ -33,7 +33,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 
 # Regra para executar os três comandos solicitados
 run: all
-	$(EXEC)
+	$(EXEC) /Users/gil/Code/faculdade/ED/TP2/hospital-scheduling-simulation/data/teste.csv
 
 # Limpar os arquivos compilados
 clean:

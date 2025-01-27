@@ -25,14 +25,14 @@ public:
     void printPatientsAdresses();
     Procedure* procedures[INDEXCAST(QueueType::TOTAL)];
     Queue* arrivalQueue;
+    void cleanupQueues();
 
 private:
     Patient** patients;
     void initializeQueues();
-    void cleanupQueues();
     void extractData(const std::string &filePath);
     
-    Fifo* queues[INDEXCAST(QueueType::TOTAL)][INDEXCAST(Urgency::TOTAL)];
+    Queue* queues[INDEXCAST(QueueType::TOTAL)][INDEXCAST(Urgency::TOTAL)];
 
     // Use Case Variables
     float times[INDEXCAST(State::HospitalDischarge)+1];

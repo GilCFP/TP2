@@ -7,31 +7,32 @@ using namespace std;
 
 void processSchedulerEmpty(Escalonator &scheduler, UseCase &hospitalHZ, Clock &simulationClock)
 {
-    for (int i = 0; i < INDEXCAST(QueueType::TOTAL); i++)
+    for (size_t i = 0; i < INDEXCAST(QueueType::TOTAL); i++)
     {
         if (hospitalHZ.hasSpaceInProcedure(static_cast<QueueType>(i)) && !hospitalHZ.isEmptyQueue(static_cast<QueueType>(i)))
         {
-            for (int j = 0; j < hospitalHZ.getSpaceInProcedure(static_cast<QueueType>(i)); j++)
+            for (size_t j = 0; j < hospitalHZ.getSpaceInProcedure(static_cast<QueueType>(i)); j++)
             {
                 scheduler.addEvent(simulationClock.getCurrentTime(), QueueTypeToState(static_cast<QueueType>(i)), nullptr);
             }
         }
     }
 }
+
 int main(int argc, char *argv[])
 {
-    // if (argc < 2) {
-    //     std::cout << "Usage: " << argv[0] << " <csv-file>" << std::endl;
-    //     return 1;
-    // }
+    if (argc < 2) {
+        std::cout << "Usage: " << argv[0] << " <csv-file>" << std::endl;
+        return 1;
+    }
 
     UseCase hospitalHZ;
 
-    // std::string filePath = argv[1];
-    // hospitalHZ.init(filePath);
+    std::string filePath = argv[1];
+    hospitalHZ.init(filePath);
 
     // Load the use case data
-    hospitalHZ.init("/Users/gil/Code/faculdade/ED/TP2/hospital-scheduling-simulation/data/teste.csv");
+    //hospitalHZ.init("/Users/gil/Code/faculdade/ED/TP2/hospital-scheduling-simulation/data/teste.csv");
 
     Escalonator scheduler;
     Patient *nextPatient = hospitalHZ.getArrivalPatient();
@@ -44,13 +45,10 @@ int main(int argc, char *argv[])
     Clock simulationClock(nextPatient->getYear(), nextPatient->getMonth(), nextPatient->getDay(), nextPatient->getHour());
     scheduler.addEvent(0, State::NotArrived, nextPatient);
     nextPatient = hospitalHZ.getArrivalPatient();
-    std::cout << nextPatient->getId() << std::endl;
     while (nextPatient != nullptr)
     {
         int timeDifference = simulationClock.getTimeDifference(nextPatient->getYear(), nextPatient->getMonth(), nextPatient->getDay(), nextPatient->getHour());
         scheduler.addEvent(timeDifference, State::NotArrived, nextPatient);
-        nextPatient->setEnteredQueue(timeDifference);
-        std::cout << nextPatient->getId() << std::endl;
         nextPatient = hospitalHZ.getArrivalPatient();
     }
 
@@ -91,7 +89,7 @@ int main(int argc, char *argv[])
         scheduler.checkQueues(&hospitalHZ, simulationClock.getCurrentTime());
 
         // Clean up the event pointer
-
+        free(nextEvent);
         delete event;
     }
     //std::cout << "Results:" << std::endl;

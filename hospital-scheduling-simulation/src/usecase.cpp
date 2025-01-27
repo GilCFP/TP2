@@ -29,20 +29,21 @@ Patient *UseCase::getArrivalPatient()
 void UseCase::initializeQueues()
 {
     arrivalQueue = new Queue();
-    for (int i = 0; i < INDEXCAST(QueueType::TOTAL); ++i)
+    for (size_t i = 0; i < INDEXCAST(QueueType::TOTAL); ++i)
     {
-        for (int j = 0; j < INDEXCAST(Urgency::TOTAL); ++j)
+        for (size_t j = 0; j < INDEXCAST(Urgency::TOTAL); ++j)
         {
-            queues[i][j] = new Fifo();
+            queues[i][j] = new Queue();
         }
     }
 }
 
 void UseCase::cleanupQueues()
 {
-    for (int i = 0; i < INDEXCAST(QueueType::TOTAL); ++i)
+    delete arrivalQueue;
+    for (size_t i = 0; i < INDEXCAST(QueueType::TOTAL); ++i)
     {
-        for (int j = 0; j < INDEXCAST(Urgency::TOTAL); ++j)
+        for (size_t j = 0; j < INDEXCAST(Urgency::TOTAL); ++j)
         {
             delete queues[i][j];
         }
@@ -55,9 +56,9 @@ bool UseCase::isAllEmpty() const
     {
         return false;
     }
-    for (int i = 0; i < INDEXCAST(QueueType::TOTAL); ++i)
+    for (size_t i = 0; i < INDEXCAST(QueueType::TOTAL); ++i)
     {
-        for (int j = 0; j < INDEXCAST(Urgency::TOTAL); ++j)
+        for (size_t j = 0; j < INDEXCAST(Urgency::TOTAL); ++j)
         {
             if (!queues[i][j]->IsEmpty())
             {
@@ -72,7 +73,7 @@ void UseCase::init(const std::string &filePath)
 {
     extractData(filePath);
 
-    for (int i = 0; i < INDEXCAST(QueueType::TOTAL); ++i)
+    for (size_t i = 0; i < INDEXCAST(QueueType::TOTAL); ++i)
     {
         procedures[i] = new Procedure(capacities[i], times[i]);
     }
@@ -111,7 +112,7 @@ std::tuple<Event*, Event*> * UseCase::processEvent(Event *event)
         patient->increaseIdleTime(event->time);
         newEvent = new Event{event->time + timeInProcedure, static_cast<State>(code + 1), patient};
 
-        cout << "Patient " << patient->getId() << " leaved queue " << StateToString(event->code) << " at " << event->time << endl;
+        //cout << "Patient " << patient->getId() << " leaved queue " << StateToString(event->code) << " at " << event->time << endl;
 
         return new tuple<Event*, Event*>{newEvent, nullptr};
 
@@ -121,7 +122,7 @@ std::tuple<Event*, Event*> * UseCase::processEvent(Event *event)
             patient = event->patient;
             procedures[queueIndex]->endProcedure();
             event->patient->discharge(event->time);
-            cout << "Patient " << patient->getId() << " discharged immediatly" << " at: "<< event->time<<endl;
+            //cout << "Patient " << patient->getId() << " discharged immediatly" << " at: "<< event->time<<endl;
             //timeInProcedure = procedures[queueIndex]->getAverageTime() * patient->getProcedures();
 
             //patient->increaseTimeInTreatment(timeInProcedure);
@@ -133,7 +134,7 @@ std::tuple<Event*, Event*> * UseCase::processEvent(Event *event)
     case State::OnConsumables:
     case State::OnImagingExams:
 
-        cout << "Patient " << event->patient->getId() << " realized procedure " << StateToString(event->code) << " at " << event->time << endl;
+        //cout << "Patient " << event->patient->getId() << " realized procedure " << StateToString(event->code) << " at " << event->time << endl;
         patient = event->patient;
 
         patient->goToNextState(event->time);
@@ -157,11 +158,11 @@ std::tuple<Event*, Event*> * UseCase::processEvent(Event *event)
     case State::NotArrived:
 
         patient = event->patient;
-        cout << "Patient " << patient->getId() << " arrived at " << event->time << endl;
+        //cout << "Patient " << patient->getId() << " arrived at " << event->time << endl;
         patient->goToNextState(event->time);
         patient->setEnteredQueue(event->time);
         //cout << "Patient " << event->patient->getId() << " realized procedure " << StateToString(event->code) << " at " << event->time << endl;
-        queues[INDEXCAST(QueueType::Triage)][INDEXCAST(Urgency::TOTAL) - 2]->Enqueue(event->patient);
+        queues[INDEXCAST(QueueType::Triage)][INDEXCAST(Urgency::Red)]->Enqueue(event->patient);
         return nullptr;
 
 
@@ -197,7 +198,7 @@ void UseCase::extractData(const std::string &filePath)
 
     std::string line;
 
-    for (int i = 1; i < INDEXCAST(QueueType::TOTAL); ++i)
+    for (size_t i = 1; i < INDEXCAST(QueueType::TOTAL); ++i)
     {
         std::getline(file, line, ' ');
         times[i] = std::stof(line);
@@ -242,7 +243,7 @@ void UseCase::extractData(const std::string &filePath)
 
 bool UseCase::isEmptyQueue(QueueType queueType)
 {
-    for (int i = 0; i < INDEXCAST(Urgency::TOTAL); ++i)
+    for (size_t i = 0; i < INDEXCAST(Urgency::TOTAL); ++i)
     {
         if (!queues[INDEXCAST(queueType)][i]->IsEmpty())
         {

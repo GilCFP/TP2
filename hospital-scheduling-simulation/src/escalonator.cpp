@@ -21,7 +21,7 @@ bool Escalonator::isEmpty() const {
 }
 
 void Escalonator::checkQueues(UseCase* useCase, double simulationTime) {
-    for (int i = 0; i < INDEXCAST(QueueType::TOTAL); ++i) {
+    for (size_t i = 0; i < INDEXCAST(QueueType::TOTAL); ++i) {
         auto queueType = static_cast<QueueType>(i);
 
         if (!useCase->isEmptyQueue(queueType) && useCase->hasSpaceInProcedure(queueType)) {

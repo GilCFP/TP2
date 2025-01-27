@@ -1,3 +1,5 @@
+#ifndef CLOCK_H
+#define CLOCK_H
 class Clock {
 public:
     Clock(int year, int month, int day, double hour);
@@ -13,3 +15,4 @@ public:
 private:
     double currentTime; // Current time in the simulation
 };
+#endif

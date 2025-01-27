@@ -1,7 +1,8 @@
 #ifndef TYPES_H
 #define TYPES_H
-
-#define INDEXCAST(x) static_cast<unsigned long>(x)
+#include <stdexcept>
+#include <string>
+#define INDEXCAST(x) static_cast<unsigned int>(x)
 
 enum class State {
     NotArrived = 1,

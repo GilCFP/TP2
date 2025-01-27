@@ -1,6 +1,9 @@
 #ifndef ESCALONATOR_H
 #define ESCALONATOR_H
 
+#include "types.h"
+#include "clock.h"
+#include "fifo.h"
 #include "usecase.h"
 #include "eventqueue.h"
 
